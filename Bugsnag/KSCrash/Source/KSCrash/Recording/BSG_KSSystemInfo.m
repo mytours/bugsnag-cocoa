@@ -207,9 +207,9 @@ static inline bool is_jailbroken() {
     }
 
     // Append some device-specific data.
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwMachine]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.machine"]
                          dataUsingEncoding:NSUTF8StringEncoding]];
-    [data appendData:(NSData * _Nonnull)[[self stringSysctl:BSGKeyHwModel]
+    [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.model"]
                          dataUsingEncoding:NSUTF8StringEncoding]];
     [data appendData:(NSData * _Nonnull)[[self currentCPUArch]
                          dataUsingEncoding:NSUTF8StringEncoding]];
@@ -367,10 +367,19 @@ static inline bool is_jailbroken() {
 
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSDictionary *infoDict = [mainBundle infoDictionary];
+
     const struct mach_header *header = _dyld_get_image_header(0);
+
 #ifdef __clang_version__
     sysInfo[@BSG_KSSystemField_ClangVersion] = @__clang_version__;
 #endif
+
+#if TARGET_OS_SIMULATOR
+    //
+    // When running on the simulator, we want to report the name and version of
+    // the simlated OS.
+    //
+
 #if TARGET_OS_IOS
     // Note: This does not match UIDevice.currentDevice.systemName for versions
     // prior to (and some versions of) iOS 9 where the systemName was reported
@@ -379,40 +388,61 @@ static inline bool is_jailbroken() {
     // the information we need but will contain the macOS information when
     // running on the Simulator.
     sysInfo[@BSG_KSSystemField_SystemName] = @"iOS";
-#elif TARGET_OS_OSX
-    sysInfo[@BSG_KSSystemField_SystemName] = @"Mac OS";
 #elif TARGET_OS_TV
     sysInfo[@BSG_KSSystemField_SystemName] = @"tvOS";
-#endif
-    NSOperatingSystemVersion version =
-        [NSProcessInfo processInfo].operatingSystemVersion;
-    NSString *systemVersion;
-    if (version.patchVersion == 0) {
-        systemVersion =
-        [NSString stringWithFormat:@"%ld.%ld",
-         (long)version.majorVersion, (long)version.minorVersion];
-    } else {
-        systemVersion =
-        [NSString stringWithFormat:@"%ld.%ld.%ld",
-         (long)version.majorVersion, (long)version.minorVersion,
-         (long)version.patchVersion];
-    }
-    sysInfo[@BSG_KSSystemField_SystemVersion] = systemVersion;
+#endif // TARGET_OS_IOS
 
-    if ([self isSimulatorBuild]) {
-        NSString *model = [NSProcessInfo processInfo]
-                              .environment[BSGKeySimulatorModelId];
-        sysInfo[@BSG_KSSystemField_Machine] = model;
-        sysInfo[@BSG_KSSystemField_Model] = @"simulator";
-    } else {
-#if BSG_PLATFORM_OSX
-        // MacOS has the machine in the model field, and no model
-        sysInfo[@BSG_KSSystemField_Machine] = [self stringSysctl:BSGKeyHwModel];
-#else
-        sysInfo[@BSG_KSSystemField_Machine] = [self stringSysctl:BSGKeyHwMachine];
-        sysInfo[@BSG_KSSystemField_Model] = [self stringSysctl:BSGKeyHwModel];
-#endif
+    NSDictionary *env = NSProcessInfo.processInfo.environment;
+    sysInfo[@(BSG_KSSystemField_SystemVersion)] = env[@"SIMULATOR_RUNTIME_VERSION"];
+    sysInfo[@(BSG_KSSystemField_Machine)] = env[@"SIMULATOR_MODEL_IDENTIFIER"];
+    sysInfo[@(BSG_KSSystemField_Model)] = @"simulator";
+
+#else // !TARGET_OS_SIMULATOR
+
+    //
+    // Report the name and version of the underlying OS the app is running on.
+    // For Mac Catalyst and iOS apps running on macOS, this means macOS rather
+    // than the version of iOS it emulates ("iOSSupportVersion")
+    //
+
+    static NSDictionary *sysVersion;
+    if (!sysVersion) {
+        sysVersion = [NSDictionary dictionaryWithContentsOfFile:
+                      @"/System/Library/CoreServices/SystemVersion.plist"];
     }
+
+    NSString *systemName = sysVersion[@"ProductName"];
+    sysInfo[@(BSG_KSSystemField_SystemName)] = systemName;
+    sysInfo[@(BSG_KSSystemField_SystemVersion)] = sysVersion[@"ProductVersion"];
+    sysInfo[@"iOSSupportVersion"] = sysVersion[@"iOSSupportVersion"];
+
+    // "ProductName" only changed from "Mac OS X" to "macOS" in 11.0 despite
+    // the branding having changed in 10.12. "ProductName" never contained
+    // "OS X".
+    if ([systemName isEqual:@"macOS"] || [systemName isEqual:@"Mac OS X"]) {
+        // KSCrash had a hard-coded "Mac OS" when we forked it.
+        sysInfo[@(BSG_KSSystemField_SystemName)] = @"Mac OS";
+        // On macOS hw.model contains the "Model Identifier" e.g. MacBookPro16,1
+        sysInfo[@(BSG_KSSystemField_Machine)] = [self stringSysctl:@"hw.model"];
+        // and hw.machine contains the instruction set - e.g. "arm64" or "x86_64"
+        // we omit this since it doesn't match what we're expecting or want.
+    } else {
+        // On iOS & tvOS hw.machine contains the "Model Identifier" or
+        // "ProductType" - e.g. "iPhone6,1"
+        sysInfo[@(BSG_KSSystemField_Machine)] = [self stringSysctl:@"hw.machine"];
+        // and hw.model contains the "Internal Name" or "Board ID" - e.g. "D79AP"
+        sysInfo[@(BSG_KSSystemField_Model)] = [self stringSysctl:@"hw.model"];
+    }
+    
+    //
+    // Bugsnag payload mapping:
+    //
+    // BSG_KSSystemField_Machine => device.model
+    // BSG_KSSystemField_Model   => device.modelNumber
+    //
+
+#endif // TARGET_OS_SIMULATOR
+
     sysInfo[@BSG_KSSystemField_KernelVersion] = [self stringSysctl:@"kern.version"];
     sysInfo[@BSG_KSSystemField_OSVersion] = [self osBuildVersion];
     sysInfo[@BSG_KSSystemField_Jailbroken] = @([self isJailbroken]);

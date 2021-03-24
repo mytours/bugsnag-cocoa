@@ -47,17 +47,29 @@
 - (void)testDeviceInfo {
     BugsnagClient *client = [Bugsnag client];
     NSDictionary *device = [client collectDeviceWithState];
-    XCTAssertNotNil(device);
-
-    NSArray *observedKeys = [[device allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    NSMutableArray *expectedKeys = [@[@"freeDisk", @"freeMemory", @"id", @"jailbroken", @"locale", @"manufacturer",
-            @"model", @"osName", @"osVersion", @"runtimeVersions", @"time", @"totalMemory"] mutableCopy];
-
+    XCTAssertNotNil(device[@"freeDisk"]);
+    XCTAssertNotNil(device[@"freeMemory"]);
+    XCTAssertNotNil(device[@"id"]);
+    XCTAssertNotNil(device[@"jailbroken"]);
+    XCTAssertNotNil(device[@"locale"]);
+    XCTAssertNotNil(device[@"manufacturer"]);
+    XCTAssertNotNil(device[@"model"]);
+    XCTAssertNotNil(device[@"osName"]);
+    XCTAssertNotNil(device[@"osVersion"]);
+    XCTAssertNotNil(device[@"runtimeVersions"]);
+    XCTAssertNotNil(device[@"time"]);
+    XCTAssertNotNil(device[@"totalMemory"]);
+    
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    [expectedKeys addObject:@"modelNumber"];
+    BOOL isOnMac = NO;
+    if (@available(iOS 13.0, *)) {
+        // Note: macCatalystApp is also YES for iOS apps on Apple Silicon
+        isOnMac = NSProcessInfo.processInfo.macCatalystApp;
+    }
+    if (!isOnMac) {
+        XCTAssertNotNil(device[@"modelNumber"]);
+    }
 #endif
-
-    XCTAssertEqualObjects(observedKeys, [expectedKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]);
 }
 
 - (void)testBreadcrumbInfo {
