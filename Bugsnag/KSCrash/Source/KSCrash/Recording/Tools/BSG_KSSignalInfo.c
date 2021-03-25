@@ -120,9 +120,9 @@ const char *bsg_kssignal_signalCodeName(const int sigNum, const int code) {
     return NULL;
 }
 
-const int *bsg_kssignal_fatalSignals(void) { return bsg_g_fatalSignals; }
+const int *bsg_kssignal_fatalSignals(void) __attribute__((asyncsafe)) { return bsg_g_fatalSignals; }
 
-int bsg_kssignal_numFatalSignals(void) { return bsg_g_fatalSignalsCount; }
+int bsg_kssignal_numFatalSignals(void) __attribute__((asyncsafe)) { return bsg_g_fatalSignalsCount; }
 
 #define EXC_UNIX_BAD_SYSCALL 0x10000 /* SIGSYS */
 #define EXC_UNIX_BAD_PIPE 0x10001    /* SIGPIPE */

@@ -216,7 +216,7 @@ bool bsg_kscrashstate_i_loadState(BSG_KSCrash_State *const context,
  * @return true if the operation was successful.
  */
 bool bsg_kscrashstate_i_saveState(const BSG_KSCrash_State *const state,
-                                  const char *const path) {
+                                  const char *const path) __attribute__((asyncsafe)) {
     int fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
     if (fd < 0) {
         BSG_KSLOG_ERROR(@"Could not open file %s for writing: %s", path,
@@ -346,7 +346,7 @@ void bsg_kscrashstate_notifyAppTerminate(void) {
     bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
-void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) {
+void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) __attribute__((asyncsafe)) {
     BSG_KSCrash_State *const state = bsg_g_state;
     const char *const stateFilePath = bsg_g_stateFilePath;
     bsg_kscrashstate_updateDurationStats(state);
@@ -354,7 +354,7 @@ void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) {
     bsg_kscrashstate_i_saveState(state, stateFilePath);
 }
 
-void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state) {
+void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state) __attribute__((asyncsafe)) {
     uint64_t timeNow = mach_absolute_time();
     const double duration = bsg_ksmachtimeDifferenceInSeconds(
         timeNow, state->lastUpdateDurationsTime ?: state->appLaunchTime);

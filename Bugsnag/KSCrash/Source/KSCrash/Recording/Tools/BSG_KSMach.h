@@ -279,7 +279,7 @@ bool bsg_ksmachgetThreadQueueName(thread_t thread, char *buffer,
  *
  * @return The current thread ID.
  */
-thread_t bsg_ksmachthread_self(void);
+thread_t bsg_ksmachthread_self(void) __attribute__((asyncsafe));
 
 /** Get a mach thread's corresponding posix thread.
  *
@@ -301,7 +301,7 @@ thread_t bsg_ksmachmachThreadFromPThread(const pthread_t pthread);
  *
  * @return true if thread suspention was at least partially successful.
  */
-bool bsg_ksmachsuspendAllThreads(void);
+bool bsg_ksmachsuspendAllThreads(void) __attribute__((asyncsafe));
 
 /** Suspend all threads except for the current one and the specified threads.
  *
@@ -312,13 +312,13 @@ bool bsg_ksmachsuspendAllThreads(void);
  * @return true if thread suspention was at least partially successful.
  */
 bool bsg_ksmachsuspendAllThreadsExcept(thread_t *exceptThreads,
-                                       int exceptThreadsCount);
+                                       int exceptThreadsCount) __attribute__((asyncsafe));
 
 /** Resume all threads except for the current one.
  *
  * @return true if thread resumption was at least partially successful.
  */
-bool bsg_ksmachresumeAllThreads(void);
+bool bsg_ksmachresumeAllThreads(void) __attribute__((asyncsafe));
 
 /** Resume all threads except for the current one and the specified threads.
  *
@@ -329,7 +329,7 @@ bool bsg_ksmachresumeAllThreads(void);
  * @return true if thread resumption was at least partially successful.
  */
 bool bsg_ksmachresumeAllThreadsExcept(thread_t *exceptThreads,
-                                      int exceptThreadsCount);
+                                      int exceptThreadsCount) __attribute__((asyncsafe));
 
 /** Copy memory safely. If the memory is not accessible, returns false
  * rather than crashing.
@@ -367,7 +367,7 @@ size_t bsg_ksmachcopyMaxPossibleMem(const void *src, void *dst,
  *
  * @return The difference between the two timestamps in seconds.
  */
-double bsg_ksmachtimeDifferenceInSeconds(uint64_t endTime, uint64_t startTime);
+double bsg_ksmachtimeDifferenceInSeconds(uint64_t endTime, uint64_t startTime) __attribute__((asyncsafe));
 
 /** Check if the current process is being traced or not.
  *

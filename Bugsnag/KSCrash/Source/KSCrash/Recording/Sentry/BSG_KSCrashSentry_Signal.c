@@ -73,7 +73,7 @@ static BSG_KSCrash_SentryContext *bsg_g_context;
 #pragma mark - Callbacks -
 // ============================================================================
 
-static struct sigaction *get_previous_sigaction(int sigNum) {
+static struct sigaction *get_previous_sigaction(int sigNum) __attribute__((asyncsafe)) {
     const int *fatalSignals = bsg_kssignal_fatalSignals();
     int fatalSignalsCount = bsg_kssignal_numFatalSignals();
     for (int i = 0; i < fatalSignalsCount; i++) {
@@ -99,7 +99,7 @@ static struct sigaction *get_previous_sigaction(int sigNum) {
  * @param userContext Other contextual information.
  */
 void bsg_kssighndl_i_handleSignal(int sigNum, siginfo_t *signalInfo,
-                                  void *userContext) {
+                                  void *userContext) __attribute__((asyncsafe)) {
     BSG_KSLOG_DEBUG("Trapped signal %d", sigNum);
     if (bsg_g_enabled) {
         bool wasHandlingCrash = bsg_g_context->handlingCrash;

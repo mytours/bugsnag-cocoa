@@ -58,13 +58,13 @@ const char *bsg_kssignal_signalCodeName(int signal, int code);
  *
  * @return A list of fatal signals.
  */
-const int *bsg_kssignal_fatalSignals(void);
+const int *bsg_kssignal_fatalSignals(void) __attribute__((asyncsafe));
 
 /** Get the size of the fatal signals list.
  *
  * @return The size of the fatal signals list.
  */
-int bsg_kssignal_numFatalSignals(void);
+int bsg_kssignal_numFatalSignals(void) __attribute__((asyncsafe));
 
 /** Get the signal equivalent of a mach exception.
  *

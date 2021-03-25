@@ -107,7 +107,7 @@ void bsg_kscrashstate_notifyAppTerminate(void);
 
 /** Notify the crash reporter that the application has crashed.
  */
-void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type);
+void bsg_kscrashstate_notifyAppCrash(BSG_KSCrashType type) __attribute__((asyncsafe));
 
 /** Read-only access into the current state.
  */
@@ -119,7 +119,7 @@ const BSG_KSCrash_State *bsg_kscrashstate_currentState(void);
  *
  * @param state the kscrash state
  */
-void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state);
+void bsg_kscrashstate_updateDurationStats(BSG_KSCrash_State *const state) __attribute__((asyncsafe));
 
 #ifdef __cplusplus
 }

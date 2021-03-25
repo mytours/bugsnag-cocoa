@@ -38,22 +38,22 @@ extern "C" {
  * Reserved threads include the current thread and all threads in
  "reservedThreads" in the context.
  */
-void bsg_kscrashsentry_suspendThreads(void);
+void bsg_kscrashsentry_suspendThreads(void) __attribute__((asyncsafe));
 
 /** Resume all non-reserved threads.
  *
  * Reserved threads include the current thread and all threads in
  * "reservedThreads" in the context.
  */
-void bsg_kscrashsentry_resumeThreads(void);
+void bsg_kscrashsentry_resumeThreads(void) __attribute__((asyncsafe));
 
 /** Prepare the context for handling a new crash.
  */
-void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext *context);
+void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext *context) __attribute__((asyncsafe));
 
 /** Clear a crash sentry context.
  */
-void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context);
+void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) __attribute__((asyncsafe));
 
 #ifdef __cplusplus
 }

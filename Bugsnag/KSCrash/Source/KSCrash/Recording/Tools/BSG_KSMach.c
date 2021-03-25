@@ -242,7 +242,7 @@ void bsg_ksmach_init(void) {
     }
 }
 
-thread_t bsg_ksmachthread_self() {
+thread_t bsg_ksmachthread_self() __attribute__((asyncsafe)) {
     thread_t thread_self = mach_thread_self();
     mach_port_deallocate(mach_task_self(), thread_self);
     return thread_self;
@@ -354,7 +354,7 @@ bool bsg_ksmachgetThreadQueueName(const thread_t thread, char *const buffer,
 // ============================================================================
 
 static inline bool isThreadInList(thread_t thread, thread_t *list,
-                                  int listCount) {
+                                  int listCount) __attribute__((asyncsafe)) {
     for (int i = 0; i < listCount; i++) {
         if (list[i] == thread) {
             return true;
@@ -363,12 +363,12 @@ static inline bool isThreadInList(thread_t thread, thread_t *list,
     return false;
 }
 
-bool bsg_ksmachsuspendAllThreads(void) {
+bool bsg_ksmachsuspendAllThreads(void) __attribute__((asyncsafe)) {
     return bsg_ksmachsuspendAllThreadsExcept(NULL, 0);
 }
 
 bool bsg_ksmachsuspendAllThreadsExcept(thread_t *exceptThreads,
-                                       int exceptThreadsCount) {
+                                       int exceptThreadsCount) __attribute__((asyncsafe)) {
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
     const thread_t thisThread = bsg_ksmachthread_self();
@@ -404,12 +404,12 @@ bool bsg_ksmachsuspendAllThreadsExcept(thread_t *exceptThreads,
     return true;
 }
 
-bool bsg_ksmachresumeAllThreads(void) {
+bool bsg_ksmachresumeAllThreads(void) __attribute__((asyncsafe)) {
     return bsg_ksmachresumeAllThreadsExcept(NULL, 0);
 }
 
 bool bsg_ksmachresumeAllThreadsExcept(thread_t *exceptThreads,
-                                      int exceptThreadsCount) {
+                                      int exceptThreadsCount) __attribute__((asyncsafe)) {
     kern_return_t kr;
     const task_t thisTask = mach_task_self();
     const thread_t thisThread = bsg_ksmachthread_self();
@@ -492,7 +492,7 @@ size_t bsg_ksmachcopyMaxPossibleMem(const void *const src, void *const dst,
 }
 
 double bsg_ksmachtimeDifferenceInSeconds(const uint64_t endTime,
-                                         const uint64_t startTime) {
+                                         const uint64_t startTime) __attribute__((asyncsafe)) {
     // From
     // http://lists.apple.com/archives/perfoptimization-dev/2005/Jan/msg00039.html
 

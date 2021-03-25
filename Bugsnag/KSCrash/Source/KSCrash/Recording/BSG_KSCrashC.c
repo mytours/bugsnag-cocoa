@@ -69,7 +69,7 @@ BSG_KSCrash_Context *crashContext(void) {
  *
  * This function gets passed as a callback to a crash handler.
  */
-void bsg_kscrash_i_onCrash(BSG_KSCrash_Context *context) {
+void bsg_kscrash_i_onCrash(BSG_KSCrash_Context *context) __attribute__((asyncsafe)) {
     BSG_KSLOG_DEBUG("Updating application state to note crash.");
 
     bsg_kscrashstate_notifyAppCrash(context->crash.crashType);

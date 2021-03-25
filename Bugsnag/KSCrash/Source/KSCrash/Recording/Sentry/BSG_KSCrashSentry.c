@@ -139,7 +139,7 @@ void bsg_kscrashsentry_uninstall(BSG_KSCrashType crashTypes) {
 #pragma mark - Private API -
 // ============================================================================
 
-void bsg_kscrashsentry_suspendThreads(void) {
+void bsg_kscrashsentry_suspendThreads(void) __attribute__((asyncsafe)) {
     BSG_KSLOG_DEBUG("Suspending threads.");
     if (!bsg_g_threads_are_running) {
         BSG_KSLOG_DEBUG("Threads already suspended.");
@@ -167,7 +167,7 @@ void bsg_kscrashsentry_suspendThreads(void) {
     BSG_KSLOG_DEBUG("Suspend complete.");
 }
 
-void bsg_kscrashsentry_resumeThreads(void) {
+void bsg_kscrashsentry_resumeThreads(void) __attribute__((asyncsafe)) {
     BSG_KSLOG_DEBUG("Resuming threads.");
     if (bsg_g_threads_are_running) {
         BSG_KSLOG_DEBUG("Threads already resumed.");
@@ -194,7 +194,7 @@ void bsg_kscrashsentry_resumeThreads(void) {
     BSG_KSLOG_DEBUG("Resume complete.");
 }
 
-void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
+void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) __attribute__((asyncsafe)) {
     void (*onCrash)(void *) = context->onCrash;
     bool threadTracingEnabled = context->threadTracingEnabled;
     bool reportWhenDebuggerIsAttached = context->reportWhenDebuggerIsAttached;
@@ -206,7 +206,7 @@ void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
     context->reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
 }
 
-void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext *context) {
+void bsg_kscrashsentry_beginHandlingCrash(BSG_KSCrash_SentryContext *context) __attribute__((asyncsafe)) {
     bsg_kscrashsentry_clearContext(context);
     context->handlingCrash = true;
 }

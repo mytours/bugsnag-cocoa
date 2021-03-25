@@ -654,7 +654,7 @@ int bsg_ksjsonbeginArray(BSG_KSJSONEncodeContext *const context,
 }
 
 int bsg_ksjsonbeginObject(BSG_KSJSONEncodeContext *const context,
-                          const char *const name) {
+                          const char *const name) __attribute__((asyncsafe)) {
     likely_if(context->containerLevel >= 0) {
         int result = bsg_ksjsonbeginElement(context, name);
         unlikely_if(result != BSG_KSJSON_OK) { return result; }
@@ -693,7 +693,7 @@ int bsg_ksjsonendContainer(BSG_KSJSONEncodeContext *const context) {
 void bsg_ksjsonbeginEncode(BSG_KSJSONEncodeContext *const context,
                            bool prettyPrint,
                            BSG_KSJSONAddDataFunc addJSONDataFunc,
-                           void *const userData) {
+                           void *const userData) __attribute__((asyncsafe)) {
     memset(context, 0, sizeof(*context));
     context->addJSONData = addJSONDataFunc;
     context->userData = userData;

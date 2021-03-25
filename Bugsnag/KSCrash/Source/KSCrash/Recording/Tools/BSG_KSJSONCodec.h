@@ -123,7 +123,7 @@ typedef struct {
  * @param userData User-specified data which gets passed to addJSONData.
  */
 void bsg_ksjsonbeginEncode(BSG_KSJSONEncodeContext *context, bool prettyPrint,
-                           BSG_KSJSONAddDataFunc addJSONData, void *userData);
+                           BSG_KSJSONAddDataFunc addJSONData, void *userData) __attribute__((asyncsafe));
 
 /** End the encoding process, ending any remaining open containers.
  *
