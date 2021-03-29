@@ -34,8 +34,8 @@
     [super windowDidLoad];
 
     self.apiKey = @"12312312312312312312312312312312";
-    self.notifyEndpoint = @"http://bs-local.com:9339/notify";
-    self.sessionEndpoint = @"http://bs-local.com:9339/sessions";
+    self.notifyEndpoint = @"http://maze-local:9339/notify";
+    self.sessionEndpoint = @"http://maze-local:9339/sessions";
 }
 
 - (BugsnagConfiguration *)configuration {
