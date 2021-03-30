@@ -28,7 +28,6 @@ steps:
           - "--device=IOS_14"
           - "--resilient"
           - "--appium-version=1.17.0"
-          - "--fail-fast"
     concurrency: 9
     concurrency_group: browserstack-app
     retry:
@@ -53,7 +52,6 @@ steps:
           - "--device=sl_ios"
           - "--resilient"
           - "--appium-version=1.17.0"
-          - "--fail-fast"
     concurrency: 2
     concurrency_group: sl-app
     retry:
