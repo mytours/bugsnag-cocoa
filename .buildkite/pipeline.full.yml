@@ -75,6 +75,32 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
+  - label: ':ios: Sauce-labs iOS full end-to-end tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 120
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download: ["features/fixtures/ios-swift-cocoapods/output/iOSTestApp.ipa"]
+      docker-compose#v3.3.0:
+        run: cocoa-maze-runner
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=sl"
+          - "--os=iOS"
+          - "--device=iPhone 6S.*"
+          - "--resilient"
+    concurrency: 2
+    concurrency_group: sl-app
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+    soft_fail:
+      - exit_status: "*"
+
   - label: ':apple: macOS 11.0 full end-to-end tests'
     depends_on:
       - cocoa_fixture
