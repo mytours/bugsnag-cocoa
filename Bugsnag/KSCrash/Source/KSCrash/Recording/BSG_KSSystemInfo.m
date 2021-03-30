@@ -63,6 +63,34 @@ static inline bool is_jailbroken() {
     return is_jb;
 }
 
+/**
+ * Returns the content of /System/Library/CoreServices/SystemVersion.plist
+ * bypassing the open syscall shim that would normally redirect access to this
+ * file for iOS apps running on macOS.
+ *
+ * https://opensource.apple.com/source/xnu/xnu-7195.81.3/libsyscall/wrappers/system-version-compat.c.auto.html
+ */
+static NSDictionary * SystemVersion() {
+    static NSDictionary *systemVersion;
+    if (!systemVersion) {
+        int fd = -1;
+        char buffer[4096] = {0};
+        const char *file = "/System/Library/CoreServices/SystemVersion.plist";
+        bsg_syscall_open(file, O_RDONLY, 0, &fd);
+        if (fd < 0) {
+            return nil;
+        }
+        ssize_t length = read(fd, buffer, 4096);
+        close(fd);
+        systemVersion = [NSPropertyListSerialization
+                         propertyListWithData:
+                         [NSData dataWithBytesNoCopy:buffer length:length
+                                        freeWhenDone:NO]
+                         options:0 format:NULL error:NULL];
+    }
+    return systemVersion;
+}
+
 @implementation BSG_KSSystemInfo
 
 // ============================================================================
@@ -405,23 +433,32 @@ static inline bool is_jailbroken() {
     // than the version of iOS it emulates ("iOSSupportVersion")
     //
 
-    static NSDictionary *sysVersion;
-    if (!sysVersion) {
-        sysVersion = [NSDictionary dictionaryWithContentsOfFile:
-                      @"/System/Library/CoreServices/SystemVersion.plist"];
-    }
+    NSDictionary *sysVersion = SystemVersion();
 
+#if TARGET_OS_IOS || TARGET_OS_OSX
     NSString *systemName = sysVersion[@"ProductName"];
+    if ([systemName isEqual:@"iPhone OS"]) {
+        systemName = @"iOS";
+    } else if
+        // "ProductName" changed from "Mac OS X" to "macOS" in 11.0
+        ([systemName isEqual:@"macOS"] || [systemName isEqual:@"Mac OS X"]) {
+        // KSCrash had the name hard-coded this way when we forked it.
+        systemName = @"Mac OS";
+    }
+#elif TARGET_OS_TV
+    NSString *systemName = @"tvOS";
+#endif
+
     sysInfo[@(BSG_KSSystemField_SystemName)] = systemName;
     sysInfo[@(BSG_KSSystemField_SystemVersion)] = sysVersion[@"ProductVersion"];
     sysInfo[@"iOSSupportVersion"] = sysVersion[@"iOSSupportVersion"];
 
-    // "ProductName" only changed from "Mac OS X" to "macOS" in 11.0 despite
-    // the branding having changed in 10.12. "ProductName" never contained
-    // "OS X".
-    if ([systemName isEqual:@"macOS"] || [systemName isEqual:@"Mac OS X"]) {
-        // KSCrash had a hard-coded "Mac OS" when we forked it.
-        sysInfo[@(BSG_KSSystemField_SystemName)] = @"Mac OS";
+    // Bugsnag payload mapping:
+    //
+    // BSG_KSSystemField_Machine => device.model
+    // BSG_KSSystemField_Model   => device.modelNumber
+
+    if ([systemName isEqual:@"Mac OS"]) {
         // On macOS hw.model contains the "Model Identifier" e.g. MacBookPro16,1
         sysInfo[@(BSG_KSSystemField_Machine)] = [self stringSysctl:@"hw.model"];
         // and hw.machine contains the instruction set - e.g. "arm64" or "x86_64"
@@ -433,13 +470,6 @@ static inline bool is_jailbroken() {
         // and hw.model contains the "Internal Name" or "Board ID" - e.g. "D79AP"
         sysInfo[@(BSG_KSSystemField_Model)] = [self stringSysctl:@"hw.model"];
     }
-    
-    //
-    // Bugsnag payload mapping:
-    //
-    // BSG_KSSystemField_Machine => device.model
-    // BSG_KSSystemField_Model   => device.modelNumber
-    //
 
 #endif // TARGET_OS_SIMULATOR
 
