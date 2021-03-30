@@ -61,11 +61,9 @@
     XCTAssertNotNil(device[@"totalMemory"]);
     
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    BOOL isOnMac = NO;
-    if (@available(iOS 13.0, *)) {
-        // Note: macCatalystApp is also YES for iOS apps on Apple Silicon
-        isOnMac = NSProcessInfo.processInfo.macCatalystApp;
-    }
+    NSProcessInfo *processInfo = NSProcessInfo.processInfo;
+    BOOL isOnMac = [processInfo respondsToSelector:NSSelectorFromString(@"isMacCatalystApp")] &&
+                    [[processInfo valueForKey:@"isMacCatalystApp"] boolValue];
     if (!isOnMac) {
         XCTAssertNotNil(device[@"modelNumber"]);
     }
