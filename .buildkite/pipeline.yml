@@ -1,4 +1,12 @@
 steps:
+  - label: Build XCFramework
+    agents:
+      queue: opensource-mac-cocoa-11
+    artifact_paths:
+      - build/Bugsnag.xcframework.zip
+    commands:
+      - make xcframework
+
   - label: Build cocoa IPA
     key: cocoa_fixture
     timeout_in_minutes: 20

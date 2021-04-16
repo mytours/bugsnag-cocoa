@@ -47,7 +47,7 @@ all: build
 # A phony target is one that is not really the name of a file; rather it is just a name for a recipe to be executed when you make an explicit request.
 # There are two reasons to use a phony target: to avoid a conflict with a file of the same name, and to improve performance.
 
-.PHONY: all analyze archive bootstrap build build_carthage build_ios_static build_swift bump clean docs help infer prerelease release test test-fixtures
+.PHONY: all analyze archive bootstrap build build_carthage build_ios_static build_swift bump clean docs help infer prerelease release test test-fixtures xcframework
 
 #--------------------------------------------------------------------------
 # Build
@@ -83,6 +83,27 @@ build_carthage: ## Build the latest pushed commit with Carthage
 
 build_swift: ## Build with Swift Package Manager
 	@swift build
+
+xcframework:
+	echo "+++ Build (iOS)"
+	xcodebuild build -quiet -scheme Bugsnag-iOS -destination "generic/platform=iOS" -configuration Release -derivedDataPath build BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+	echo "+++ Build (iOS Simulator)"
+	xcodebuild build -quiet -scheme Bugsnag-iOS -destination "generic/platform=iOS Simulator" -configuration Release -derivedDataPath build BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+	echo "+++ Build (Mac Catalyst)"
+	xcodebuild build -quiet -scheme Bugsnag-iOS -destination "generic/platform=macOS" -configuration Release -derivedDataPath build BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+	echo "+++ Build (macOS)"
+	xcodebuild build -quiet -scheme Bugsnag-macOS -destination "generic/platform=macOS" -configuration Release -derivedDataPath build BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+	echo "+++ Build (tvOS)"
+	xcodebuild build -quiet -scheme Bugsnag-tvOS -destination "generic/platform=tvOS" -configuration Release -derivedDataPath build BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+	echo "+++ Create XCFramework"
+	xcodebuild -create-xcframework \
+		-framework      build/Build/Products/Release/Bugsnag.framework \
+		-framework      build/Build/Products/Release-appletvos/Bugsnag.framework \
+		-framework      build/Build/Products/Release-iphoneos/Bugsnag.framework \
+		-framework      build/Build/Products/Release-iphonesimulator/Bugsnag.framework \
+		-framework      build/Build/Products/Release-maccatalyst/Bugsnag.framework \
+		-output         build/Bugsnag.xcframework
+	cd build && zip -r Bugsnag.xcframework.zip Bugsnag.xcframework
 
 compile_commands.json:
 	set -o pipefail && xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS \
