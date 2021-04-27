@@ -181,6 +181,10 @@ int bsg_ksjsoncodecobjc_i_addJSONData(const char *const bytes,
 
 #pragma mark Constructors/Destructor
 
++ (void)initialize {
+    NSError_BSG_SimpleConstructor();
+}
+
 + (BSG_KSJSONCodec *)
 codecWithEncodeOptions:(BSG_KSJSONEncodeOption)encodeOptions
          decodeOptions:(BSG_KSJSONDecodeOption)decodeOptions {

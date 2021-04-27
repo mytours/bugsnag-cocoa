@@ -72,3 +72,7 @@
 }
 
 @end
+
+void BugsnagClient_OutOfMemory(void) {
+    // Empty funtion to force static linker to include this module
+}

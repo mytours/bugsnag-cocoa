@@ -241,6 +241,11 @@ NSString *_lastOrientation = nil;
 
 @dynamic user; // This computed property should not have a backing ivar
 
++ (void)initialize {
+    BugsnagClient_AppHangs();
+    BugsnagClient_OutOfMemory();
+}
+
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {
     if ((self = [super init])) {
         // Take a shallow copy of the configuration

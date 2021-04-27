@@ -701,6 +701,7 @@
 		01CCAEEE25D414D60057268D /* BugsnagLastRunInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CCAEE925D414D60057268D /* BugsnagLastRunInfo.m */; };
 		01CCAEEF25D414D60057268D /* BugsnagLastRunInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CCAEE925D414D60057268D /* BugsnagLastRunInfo.m */; };
 		01CCAEF025D414D60057268D /* BugsnagLastRunInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CCAEE925D414D60057268D /* BugsnagLastRunInfo.m */; };
+		01E5DC7A26380205003FAB10 /* BugsnagThread+Recording.m in Sources */ = {isa = PBXBuildFile; fileRef = 01210B8725CD665000D683BB /* BugsnagThread+Recording.m */; };
 		01E8765E256684E700F4B70A /* URLSessionMock.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E8765D256684E700F4B70A /* URLSessionMock.m */; };
 		01E8765F256684E700F4B70A /* URLSessionMock.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E8765D256684E700F4B70A /* URLSessionMock.m */; };
 		01E87660256684E700F4B70A /* URLSessionMock.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E8765D256684E700F4B70A /* URLSessionMock.m */; };
@@ -3083,6 +3084,7 @@
 				0126F7B125DD5118008483C2 /* BSGEventUploadFileOperation.m in Sources */,
 				E746290C248907E500F92D67 /* BSG_KSJSONCodec.c in Sources */,
 				E746290D248907E500F92D67 /* BSG_KSMach.c in Sources */,
+				01E5DC7A26380205003FAB10 /* BugsnagThread+Recording.m in Sources */,
 				E746290E248907E500F92D67 /* BSG_KSMach_Arm64.c in Sources */,
 				E746290F248907E500F92D67 /* BSG_KSFileUtils.c in Sources */,
 				E7462910248907E500F92D67 /* BSG_KSBacktrace.c in Sources */,

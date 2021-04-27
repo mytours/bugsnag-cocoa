@@ -112,3 +112,7 @@
 }
 
 @end
+
+void BugsnagClient_AppHangs(void) {
+    // Empty funtion to force static linker to include this module
+}

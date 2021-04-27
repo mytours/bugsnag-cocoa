@@ -12,6 +12,7 @@
 #import "BugsnagCollections.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStacktrace.h"
+#import "BugsnagThread+Recording.h"
 #import "BugsnagKeys.h"
 
 BSGThreadType BSGParseThreadType(NSString *type) {
@@ -38,6 +39,10 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
                                                          type:threadType
                                                    stacktrace:stacktrace];
     return thread;
+}
+
++ (void)initialize {
+    BugsnagThread_Recording();
 }
 
 - (instancetype)initWithId:(NSString *)id

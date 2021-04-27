@@ -64,3 +64,7 @@
 }
 
 @end
+
+void NSError_BSG_SimpleConstructor(void) {
+    // Empty funtion to force static linker to include this module
+}

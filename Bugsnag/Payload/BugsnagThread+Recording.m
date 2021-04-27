@@ -189,3 +189,7 @@ static void backtrace_for_thread(thread_t thread, struct backtrace_t *output) {
 }
 
 @end
+
+void BugsnagThread_Recording(void) {
+    // Empty funtion to force static linker to include this module
+}

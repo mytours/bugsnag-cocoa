@@ -58,3 +58,5 @@
           description:(NSString *)fmt, ...;
 
 @end
+
+void NSError_BSG_SimpleConstructor(void);
