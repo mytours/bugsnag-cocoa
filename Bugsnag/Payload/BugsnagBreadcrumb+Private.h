@@ -20,4 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+NSString *BSGBreadcrumbTypeValue(BSGBreadcrumbType type);
+BSGBreadcrumbType BSGBreadcrumbTypeFromString( NSString * _Nullable value);
+
+#ifdef __cplusplus
+}
+#endif
+
 NS_ASSUME_NONNULL_END
