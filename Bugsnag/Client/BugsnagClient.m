@@ -425,7 +425,7 @@ NSString *_lastOrientation = nil;
     }
     
     if (self.lastRunInfo.crashedDuringLaunch && self.configuration.sendLaunchCrashesSynchronously) {
-        [self sendLaunchCrashSynchronously];
+        // [self sendLaunchCrashSynchronously];
     }
     
     if (self.eventFromLastLaunch) {
