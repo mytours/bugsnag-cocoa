@@ -47,6 +47,11 @@ bool bsg_kscrashsentry_installUserExceptionHandler(
  */
 void bsg_kscrashsentry_uninstallUserExceptionHandler(void);
 
+
+/** Copies the global crash context, setting new crash report paths
+ */
+BSG_KSCrash_Context *bsg_kscrashsentry_generateReportContext(void);
+
 /** Report a custom, user defined exception.
  * If terminateProgram is true, all sentries will be uninstalled and the
  * application will terminate with an abort().
