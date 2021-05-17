@@ -55,6 +55,7 @@ void bsg_kscrashsentry_uninstallUserExceptionHandler(void) {
 /**
  * Copies the global crash context, setting new crash report paths
  */
+BSG_KSCrash_Context *bsg_kscrashsentry_generateReportContext(void);
 BSG_KSCrash_Context *bsg_kscrashsentry_generateReportContext() {
     BSG_KSCrash_Context *localContext = malloc(sizeof(BSG_KSCrash_Context));
     memcpy(localContext, crashContext(), sizeof(BSG_KSCrash_Context));
