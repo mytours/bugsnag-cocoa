@@ -5,6 +5,7 @@
 //  Created by Simon Maynard on 11/26/14.
 //
 //
+#include <TargetConditionals.h>
 
 #if TARGET_OS_MAC || TARGET_OS_TV
 #elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
