@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
 #import <XCTest/XCTest.h>
 
 #import "BSG_KSSystemInfo.h"

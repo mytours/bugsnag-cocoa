@@ -6,6 +6,7 @@
 //
 //
 
+#include <TargetConditionals.h>
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 
