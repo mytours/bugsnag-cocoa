@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
 #import "BugsnagNotifier.h"
 #import "BSGConnectivity.h"
 #import "Bugsnag.h"

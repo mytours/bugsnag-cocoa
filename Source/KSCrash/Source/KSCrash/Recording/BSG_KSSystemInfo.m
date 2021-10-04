@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BSG_KSDynamicLinker.h"

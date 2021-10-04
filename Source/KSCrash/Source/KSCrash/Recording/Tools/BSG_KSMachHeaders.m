@@ -6,6 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#include <TargetConditionals.h>
 #import <mach-o/dyld.h>
 #import <dlfcn.h>
 #import <Foundation/Foundation.h>

@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
+#include <TargetConditionals.h>
 #import "BugsnagKSCrashSysInfoParser.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"

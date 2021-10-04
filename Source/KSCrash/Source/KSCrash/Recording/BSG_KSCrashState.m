@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 //
 
+#include <TargetConditionals.h>
 #include "BSG_KSCrashState.h"
 
 #include "BSG_KSFileUtils.h"
