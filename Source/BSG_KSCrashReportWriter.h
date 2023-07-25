@@ -177,7 +177,7 @@ typedef struct BSG_KSCrashReportWriter {
      *
      * @param name The name to give this element.
      *
-     * @param value A pointer to the JSON data.
+     * value A pointer to the JSON data.
      */
     void (*addJSONElement)(const struct BSG_KSCrashReportWriter *writer,
                            const char *name, const char *jsonElement);
